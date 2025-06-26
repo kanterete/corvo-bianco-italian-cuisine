@@ -1,7 +1,6 @@
 import type { Metadata } from 'next'
 import './globals.css'
 import { HeroUIProvider } from '@heroui/react'
-
 import { Playfair_Display } from 'next/font/google'
 
 const playfair = Playfair_Display({

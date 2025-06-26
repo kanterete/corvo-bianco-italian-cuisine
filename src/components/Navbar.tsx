@@ -7,7 +7,7 @@ const Navbar = () => {
     <header className="sticky top-0 z-10 bg-white/80 shadow-sm backdrop-blur-md md:bg-white">
       <div className="container mx-auto flex items-center justify-between px-4 py-3">
         <div className="w-1/3">
-          <h1 className="text-3xl font-bold text-[#7A2E22]">Corvo Bianco</h1>
+          <p className="text-3xl font-bold text-[#7A2E22]">Corvo Bianco</p>
         </div>
 
         <ul className="hidden flex-1 items-center justify-center gap-6 text-xl font-semibold text-[#9E3B2E] md:flex">

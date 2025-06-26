@@ -9,9 +9,9 @@ const Card = () => {
         className="mb-2 rounded-xl object-cover"
       />
       <div className="p-2 text-center">
-        <h1 className="mb-2 text-xl font-semibold text-[#7A2E22]">
+        <h2 className="mb-2 text-xl font-semibold text-[#7A2E22]">
           Shrimp Pasta
-        </h1>
+        </h2>
         <p className="text-sm">
           Shrimp scampi with linguine is the ultimate seafood pasta dish," says
           recipe creator JustJen. "Works with any pasta; angel hair is less

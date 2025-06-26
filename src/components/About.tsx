@@ -8,15 +8,15 @@ const About = () => {
         <div>
           <img
             src="https://cdn2.cincinnatimagazine.com/wp-content/uploads/sites/5/2024/06/JUL24_Italian_Scottis.jpg"
-            alt=""
+            alt="diner"
             className="h-auto max-h-[500px] w-full rounded-2xl object-cover shadow-md"
           />
         </div>
 
         <div className="">
-          <h1 className="mb-4 text-4xl font-semibold text-[#7A2E22]">
+          <h2 className="mb-4 text-4xl font-semibold text-[#7A2E22]">
             ABOUT US
-          </h1>
+          </h2>
           <p className="mb-4">
             Experience the essence of Italy in every bite. Our chefs are
             dedicated to bringin you the true taste of Italy, using time-honored
