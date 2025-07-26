@@ -11,10 +11,12 @@ export default async function Order() {
   const { data: categories, error: categoryError } = await (await supabase)
     .from('categories')
     .select()
+    .overrideTypes<Category[]>()
 
   const { data: dishes, error: dishError } = await (await supabase)
     .from('dishes')
     .select('*')
+    .overrideTypes<Dish[]>()
 
   return (
     <section className="bg-white py-16">
