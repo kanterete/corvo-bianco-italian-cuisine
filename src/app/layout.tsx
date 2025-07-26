@@ -1,7 +1,9 @@
 import type { Metadata } from 'next'
 import './globals.css'
-import { HeroUIProvider } from '@heroui/react'
 import { Playfair_Display } from 'next/font/google'
+import Navbar from '@/components/Navbar'
+import Footer from '@/components/Footer'
+import { Toaster } from 'sonner'
 
 const playfair = Playfair_Display({
   subsets: ['latin'],
@@ -20,7 +22,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`min-h-screen ${playfair.className}`}>{children}</body>
+      <body className={`min-h-screen ${playfair.className}`}>
+        <Navbar />
+        {children}
+        <Footer />
+        <Toaster />
+      </body>
     </html>
   )
 }

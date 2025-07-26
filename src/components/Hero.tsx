@@ -1,4 +1,4 @@
-import { Button } from '@heroui/react'
+import Link from 'next/link'
 import React from 'react'
 
 const Hero = () => {
@@ -18,9 +18,12 @@ const Hero = () => {
             Savor the flavors of Italy with our traditional dishes made from the
             freshest ingredients
           </p>
-          <Button className="rounded-xl bg-[#9E3B2E] px-6 py-2 text-lg font-semibold text-white transition hover:bg-[#7a2e22]">
-            View menu
-          </Button>
+          <Link
+            href="/order"
+            className="rounded-xl bg-[#9E3B2E] px-6 py-2 text-lg font-semibold text-white transition hover:bg-[#7a2e22]"
+          >
+            Order
+          </Link>
         </div>
       </div>
     </section>

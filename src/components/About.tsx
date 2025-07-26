@@ -1,4 +1,3 @@
-import { Button } from '@heroui/react'
 import React from 'react'
 
 const About = () => {
@@ -22,9 +21,9 @@ const About = () => {
             dedicated to bringin you the true taste of Italy, using time-honored
             recipes and
           </p>
-          <Button className="rounded-xl bg-[#9E3B2E] px-6 py-2 text-lg font-semibold text-white transition hover:bg-[#7a2e22]">
+          <button className="rounded-xl bg-[#9E3B2E] px-6 py-2 text-lg font-semibold text-white transition hover:bg-[#7a2e22]">
             Learn more
-          </Button>
+          </button>
         </div>
       </div>
     </section>
