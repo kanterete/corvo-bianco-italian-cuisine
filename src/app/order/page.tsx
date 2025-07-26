@@ -8,15 +8,13 @@ export default async function Order() {
   const cookieStore = cookies()
   const supabase = createClient(cookieStore)
 
-  const { data: categories, error: categoryError } = await supabase
+  const { data: categories, error: categoryError } = await (await supabase)
     .from('categories')
     .select()
-    .overrideTypes<Category[]>()
 
-  const { data: dishes, error: dishError } = await supabase
+  const { data: dishes, error: dishError } = await (await supabase)
     .from('dishes')
     .select('*')
-    .overrideTypes<Dish[]>()
 
   return (
     <section className="bg-white py-16">
@@ -26,14 +24,18 @@ export default async function Order() {
         </h2>
 
         <ul className="mx-2 mb-8 flex flex-wrap gap-2">
-          {categories?.map((category) => (
-            <li
-              className="rounded-xl bg-[#9E3B2E] px-2 py-2 text-lg font-semibold text-white transition hover:bg-[#7a2e22]"
-              key={category.id}
-            >
-              {category.name}
-            </li>
-          ))}
+          {!categoryError && categories ? (
+            categories.map((category: Category) => (
+              <li
+                className="rounded-xl bg-[#9E3B2E] px-2 py-2 text-lg font-semibold text-white transition hover:bg-[#7a2e22]"
+                key={category.id}
+              >
+                {category.name}
+              </li>
+            ))
+          ) : (
+            <p className="text-lg text-gray-500">No categories found</p>
+          )}
         </ul>
 
         {!dishError && dishes ? (
