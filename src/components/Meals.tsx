@@ -1,3 +1,5 @@
+'use client'
+import { useCart } from '@/context/CartContext'
 import { Dish } from '@/types/types'
 import React from 'react'
 
@@ -6,6 +8,8 @@ type MealsProps = {
 }
 
 const Meals = ({ dishes }: MealsProps) => {
+  const { addToCart } = useCart()
+
   return (
     <section className="mx-auto grid max-w-6xl grid-cols-1 items-center gap-4 md:grid-cols-2 md:gap-8">
       {dishes.map((dish) => (
@@ -33,8 +37,11 @@ const Meals = ({ dishes }: MealsProps) => {
               <p>{dish.prep_time_minutes} min</p>
             </div>
 
-            <button className="rounded-xl bg-[#9E3B2E] px-6 py-2 text-sm font-semibold text-white transition hover:bg-[#7a2e22]">
-              Dodaj do koszyka
+            <button
+              className="rounded-xl bg-[#9E3B2E] px-6 py-2 text-sm font-semibold text-white transition hover:bg-[#7a2e22]"
+              onClick={() => addToCart(dish)}
+            >
+              Add to cart
             </button>
           </div>
         </div>

@@ -14,3 +14,7 @@ export interface Category {
   name: string
   slug: string
 }
+
+export interface CartItem extends Dish {
+  quantity: number
+}

@@ -1,6 +1,8 @@
-import { ShoppingCart } from 'lucide-react'
+'use client'
+
 import Link from 'next/link'
 import React from 'react'
+import CartDrawer from './Cart/CartDrawer'
 
 const Navbar = () => {
   return (
@@ -31,9 +33,7 @@ const Navbar = () => {
         </ul>
 
         <div className="flex w-1/3 justify-end">
-          <button className="rounded-xl bg-[#9E3B2E] p-2 text-white transition hover:bg-[#7a2e22]">
-            <ShoppingCart size={20} />
-          </button>
+          <CartDrawer />
         </div>
       </div>
     </header>
