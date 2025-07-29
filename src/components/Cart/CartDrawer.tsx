@@ -1,3 +1,4 @@
+'use client'
 import React from 'react'
 import { Button } from '@/components/ui/button'
 import { ArrowRight, ShoppingCart, Trash, X } from 'lucide-react'
@@ -15,13 +16,13 @@ import { useCart } from '@/context/CartContext'
 import CartItem from './CartItem'
 
 const CartDrawer = () => {
-  const { cart, clearCart, getTotal } = useCart()
+  const { cart, clearCart, getTotal, getCartLength } = useCart()
   return (
     <Drawer>
       <DrawerTrigger>
         <div className="relative rounded-xl bg-[#9E3B2E] p-3 text-white transition hover:bg-[#7a2e22]">
           <p className="absolute top-0 right-1 rounded-4xl text-sm font-semibold">
-            {cart.length}
+            {getCartLength() > 0 ? getCartLength() : ''}
           </p>
           <ShoppingCart size={20} />
         </div>

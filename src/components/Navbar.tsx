@@ -1,10 +1,18 @@
-'use client'
-
 import Link from 'next/link'
 import React from 'react'
 import CartDrawer from './Cart/CartDrawer'
+import AuthBadge from './Auth/AuthBadge'
+import { createClient } from '@/utils/supabase/server'
+import { cookies } from 'next/headers'
+import LoginForm from './Auth/LoginForm'
 
-const Navbar = () => {
+export default async function Navbar() {
+  const supabase = createClient(cookies())
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+
   return (
     <header className="sticky top-0 z-10 bg-white/80 shadow-sm backdrop-blur-md md:bg-white">
       <div className="container mx-auto flex items-center justify-between px-4 py-3">
@@ -32,12 +40,11 @@ const Navbar = () => {
           </a>
         </ul>
 
-        <div className="flex w-1/3 justify-end">
+        <div className="flex w-1/3 items-center justify-end gap-4">
+          {user ? <AuthBadge /> : <LoginForm />}
           <CartDrawer />
         </div>
       </div>
     </header>
   )
 }
-
-export default Navbar
