@@ -8,12 +8,12 @@ export default async function Order() {
   const cookieStore = cookies()
   const supabase = createClient(cookieStore)
 
-  const { data: categories, error: categoryError } = await (await supabase)
+  const { data: categories, error: categoryError } = await supabase
     .from('categories')
     .select()
     .overrideTypes<Category[]>()
 
-  const { data: dishes, error: dishError } = await (await supabase)
+  const { data: dishes, error: dishError } = await supabase
     .from('dishes')
     .select('*')
     .overrideTypes<Dish[]>()

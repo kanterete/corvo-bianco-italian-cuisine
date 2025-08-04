@@ -1,25 +1,30 @@
-import React from 'react'
-import { createClient } from '@/utils/supabase/client'
-import { LogOut } from 'lucide-react'
+'use client'
 
-export default async function AuthBadge() {
+import React from 'react'
+import { LogOut } from 'lucide-react'
+import { useAuth } from '@/context/AuthContext'
+import { createClient } from '@/utils/supabase/client'
+
+export default function AuthBadge() {
+  const { user, setUser } = useAuth()
   const supabase = createClient()
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
+  const handleLogout = async () => {
+    await supabase.auth.signOut()
+    setUser(null)
+  }
 
   return (
     <>
       {user ? (
-        <div className="text-sm font-semibold text-[#7A2E22]">
-          Zalogowany jako: {user.email}
+        <div className="flex flex-row gap-2 text-sm font-semibold text-[#7A2E22]">
+          logged as: {user.email}
           <button>
-            <LogOut />
+            <LogOut onClick={handleLogout} />
           </button>
         </div>
       ) : (
-        <div className="text-sm text-gray-500">Nie jesteś zalogowany</div>
+        <div className="text-sm text-gray-500">You're not logged in</div>
       )}
     </>
   )

@@ -1,4 +1,6 @@
-'use client'
+import { createClient } from '@/utils/supabase/client'
+import { useState } from 'react'
+import { toast } from 'sonner'
 import {
   Dialog,
   DialogContent,
@@ -7,39 +9,30 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Button } from '@/components/ui/button'
+import { Label } from '@radix-ui/react-label'
+import { Button, Input } from '@heroui/react'
 import { ScanFace } from 'lucide-react'
-import { useState } from 'react'
-import { createClient } from '@/utils/supabase/client'
-import { toast } from 'sonner'
-import { useAuth } from '@/context/AuthContext'
 
-export default function LoginForm() {
+export default function RegisterForm() {
   const [mail, setMail] = useState<string>('')
   const [password, setPassword] = useState<string>('')
   const [error, setError] = useState<string | null>(null)
   const [open, setOpen] = useState(false)
 
-  const { setUser } = useAuth()
-
-  const handleLogin = async (e: React.FormEvent) => {
+  const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault()
 
     const supabase = createClient()
 
-    let { data, error } = await supabase.auth.signInWithPassword({
+    let { data, error } = await supabase.auth.signUp({
       email: mail,
       password: password,
     })
 
     if (error) return setError(error.message)
 
-    const user = data.user
-    setUser(user)
     setOpen(false)
-    toast('login successfully')
+    toast('register successfully')
   }
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -53,7 +46,7 @@ export default function LoginForm() {
         </DialogTrigger>
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
-            <DialogTitle>Log into your account</DialogTitle>
+            <DialogTitle>Signup into your account</DialogTitle>
           </DialogHeader>
           <div className="grid gap-4">
             <div className="grid gap-3">
@@ -77,8 +70,8 @@ export default function LoginForm() {
             </div>
           </div>
           <DialogFooter>
-            <Button type="submit" onClick={handleLogin}>
-              Login
+            <Button type="submit" onClick={handleRegister}>
+              Signup
             </Button>
           </DialogFooter>
         </DialogContent>

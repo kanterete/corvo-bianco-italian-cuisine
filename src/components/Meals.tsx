@@ -11,7 +11,7 @@ const Meals = ({ dishes }: MealsProps) => {
   const { addToCart } = useCart()
 
   return (
-    <section className="mx-auto grid max-w-6xl grid-cols-1 items-center gap-4 md:grid-cols-2 md:gap-8">
+    <section className="mx-auto grid max-w-6xl grid-cols-1 items-center gap-4 md:grid-cols-2 md:gap-8 lg:grid-cols-3">
       {dishes.map((dish) => (
         <div
           key={dish.id}
