@@ -12,8 +12,6 @@ import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
 import { ScanFace } from 'lucide-react'
 import { useState } from 'react'
-import { createClient } from '@/utils/supabase/client'
-import { toast } from 'sonner'
 import { useAuth } from '@/context/AuthContext'
 
 export default function LoginForm() {
@@ -22,24 +20,12 @@ export default function LoginForm() {
   const [error, setError] = useState<string | null>(null)
   const [open, setOpen] = useState(false)
 
-  const { setUser } = useAuth()
+  const { signIn } = useAuth()
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
-
-    const supabase = createClient()
-
-    let { data, error } = await supabase.auth.signInWithPassword({
-      email: mail,
-      password: password,
-    })
-
-    if (error) return setError(error.message)
-
-    const user = data.user
-    setUser(user)
+    signIn(mail, password)
     setOpen(false)
-    toast('login successfully')
   }
   return (
     <Dialog open={open} onOpenChange={setOpen}>

@@ -12,27 +12,18 @@ import {
 import { Label } from '@radix-ui/react-label'
 import { Button, Input } from '@heroui/react'
 import { ScanFace } from 'lucide-react'
+import { useAuth } from '@/context/AuthContext'
 
 export default function RegisterForm() {
   const [mail, setMail] = useState<string>('')
   const [password, setPassword] = useState<string>('')
-  const [error, setError] = useState<string | null>(null)
   const [open, setOpen] = useState(false)
+  const { signUp } = useAuth()
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault()
-
-    const supabase = createClient()
-
-    let { data, error } = await supabase.auth.signUp({
-      email: mail,
-      password: password,
-    })
-
-    if (error) return setError(error.message)
-
+    signUp(mail, password)
     setOpen(false)
-    toast('register successfully')
   }
   return (
     <Dialog open={open} onOpenChange={setOpen}>
