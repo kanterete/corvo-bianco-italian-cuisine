@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import React from 'react'
+import ProfilesList from './Auth/ProfilesList'
 
 const Hero = () => {
   return (
@@ -24,6 +25,7 @@ const Hero = () => {
           >
             Order
           </Link>
+          <ProfilesList />
         </div>
       </div>
     </section>

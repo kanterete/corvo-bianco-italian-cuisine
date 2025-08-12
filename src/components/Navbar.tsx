@@ -5,9 +5,12 @@ import CartDrawer from './Cart/CartDrawer'
 import AuthBadge from './Auth/AuthBadge'
 import AuthForm from './Auth/AuthForm'
 import { Menu, X } from 'lucide-react'
+import { useAuth } from '@/context/AuthContext'
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false)
+
+  const { user } = useAuth()
 
   const handleMenu = () => {
     setIsOpen((prev) => !prev)
@@ -20,7 +23,7 @@ export default function Navbar() {
       <div
         className={`container mx-auto flex items-center justify-between px-4 py-3 ${isOpen && 'flex-col gap-4'}`}
       >
-        <div className="flex items-center justify-between gap-2">
+        <div className="flex w-full items-center justify-between gap-2 md:w-fit">
           <Link href="/" className="text-3xl font-bold text-[#7A2E22]">
             Corvo Bianco
           </Link>
@@ -49,6 +52,12 @@ export default function Navbar() {
             Contact
           </a>
         </ul>
+
+        <div className="hidden items-center justify-end gap-4 md:flex">
+          {!user && <AuthForm />}
+          <AuthBadge />
+          <CartDrawer />
+        </div>
 
         {/* mobile menu */}
         {isOpen && (
@@ -81,7 +90,7 @@ export default function Navbar() {
               </a>
             </ul>
             <div className="flex items-center justify-end gap-4">
-              <AuthForm />
+              {!user && <AuthForm />}
               <AuthBadge />
               <CartDrawer />
             </div>
