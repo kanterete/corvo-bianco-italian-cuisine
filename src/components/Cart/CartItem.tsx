@@ -1,4 +1,4 @@
-import { CartItem } from '@/types/types'
+import type { CartItem } from '@/types/types'
 import React from 'react'
 
 type CartItemProps = {
