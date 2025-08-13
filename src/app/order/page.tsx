@@ -1,30 +1,50 @@
-import React from 'react'
+'use client'
+import React, { useEffect, useState } from 'react'
 import Menu from '@/components/Menu'
 import { Category, Dish } from '@/types/types'
-import { createClient } from '@/utils/supabase/server'
-import { cookies } from 'next/headers'
+import { Skeleton } from '@/components/ui/skeleton'
 
-export default async function Order() {
-  const cookieStore = cookies()
-  const supabase = createClient(cookieStore)
+export default function Order() {
+  const [dishes, setDishes] = useState<Dish[]>([])
+  const [categories, setCategories] = useState<Category[]>([])
+  const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
-  const { data: categories, error: categoryError } = await supabase
-    .from('categories')
-    .select()
-    .overrideTypes<Category[]>()
+  useEffect(() => {
+    const getMenu = async () => {
+      setIsLoading(true)
+      setError(null)
 
-  const { data: dishes, error: dishError } = await supabase
-    .from('dishes')
-    .select('*')
-    .overrideTypes<Dish[]>()
+      try {
+        const res = await fetch('/api/menu')
+        if (!res.ok) throw new Error('Error downloading menu')
+        const data = await res.json()
+
+        setCategories(data.categories)
+        setDishes(data.dishes)
+
+        if (data.errors?.categoryError || data.errors?.dishError) {
+          setError("Data wasn't fully downloaded")
+        }
+      } catch (err: any) {
+        setError(err.message)
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    getMenu()
+  }, [])
 
   return (
     <section className="bg-white py-16">
       <div className="container mx-auto flex h-fit flex-col items-center justify-center">
-        {!categoryError && !dishError ? (
-          <Menu categories={categories} dishes={dishes} />
+        {isLoading ? (
+          <p>loading dishes....</p>
+        ) : error ? (
+          <p className="text-lg text-gray-500">{error}</p>
         ) : (
-          <p className="text-lg text-gray-500">No dishes found</p>
+          <Menu categories={categories} dishes={dishes} />
         )}
       </div>
     </section>

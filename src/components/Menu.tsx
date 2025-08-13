@@ -3,6 +3,8 @@
 import React, { useState } from 'react'
 import Meals from '@/components/Meals'
 import { Category, Dish } from '@/types/types'
+import { useAuth } from '@/context/AuthContext'
+import { PlusCircle, PlusIcon } from 'lucide-react'
 
 type MenuProps = {
   categories: Category[]
@@ -11,6 +13,7 @@ type MenuProps = {
 
 export default function Menu({ categories, dishes }: MenuProps) {
   const [selectedCategory, setSelectedCategory] = useState<number>()
+  const { isAdmin } = useAuth()
 
   const filteredDishes = selectedCategory
     ? dishes.filter((dish) => dish.category_id === selectedCategory)
@@ -43,6 +46,11 @@ export default function Menu({ categories, dishes }: MenuProps) {
           ))
         ) : (
           <p className="text-lg text-gray-500">No categories found</p>
+        )}
+        {isAdmin && (
+          <li className="flex items-center justify-between gap-2 rounded-xl border border-dashed border-[#7a2e22] px-2 py-2 text-lg font-semibold text-black transition hover:bg-[#7a2e22] hover:text-white">
+            Add category <PlusIcon size={16} />
+          </li>
         )}
       </ul>
 

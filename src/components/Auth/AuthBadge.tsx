@@ -4,19 +4,19 @@ import { LogOut } from 'lucide-react'
 import { useAuth } from '@/context/AuthContext'
 
 export default function AuthBadge() {
-  const { user, signOut } = useAuth()
+  const { user, signOut, isAdmin } = useAuth()
 
   return (
     <>
-      {user ? (
+      {user && (
         <div className="flex flex-row gap-2 text-sm font-semibold text-[#7A2E22]">
-          logged as: {user.email}
+          {user && <span>logged as: {user.email}</span>}
+          {isAdmin ? <span>Admin</span> : <span>User</span>}
+
           <button>
             <LogOut onClick={signOut} />
           </button>
         </div>
-      ) : (
-        <div className="text-sm text-gray-500">You're not logged in</div>
       )}
     </>
   )

@@ -16,6 +16,7 @@ type AuthContextType = {
   signIn: (email: string, password: string) => Promise<void>
   signUp: (email: string, password: string) => Promise<void>
   signOut: () => Promise<void>
+  isAdmin: boolean
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
@@ -23,6 +24,8 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined)
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null)
   const [isLoading, setIsLoading] = useState(false)
+  const [isAdmin, setIsAdmin] = useState(false)
+
   const supabase = createClient()
 
   useEffect(() => {
@@ -31,6 +34,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         data: { user },
       } = await supabase.auth.getUser()
       setUser(user)
+
+      if (user) {
+        const res = await fetch('/api/check-admin')
+        const { isAdmin } = await res.json()
+        setIsAdmin(isAdmin)
+      }
     }
 
     getSession()
@@ -74,7 +83,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }
 
   return (
-    <AuthContext.Provider value={{ user, setUser, signIn, signOut, signUp }}>
+    <AuthContext.Provider
+      value={{ user, setUser, signIn, signOut, signUp, isAdmin }}
+    >
       {children}
     </AuthContext.Provider>
   )

@@ -1,6 +1,4 @@
-import { createClient } from '@/utils/supabase/client'
 import { useState } from 'react'
-import { toast } from 'sonner'
 import {
   Dialog,
   DialogContent,
