@@ -46,7 +46,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, [])
 
   const signIn = async (email: string, password: string) => {
-    setIsLoading(true)
     try {
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
@@ -58,13 +57,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setUser(data.user)
     } catch (err) {
       toast.error('Something went wrong')
-    } finally {
-      setIsLoading(false)
     }
   }
 
   const signUp = async (email: string, password: string) => {
-    setIsLoading(true)
     try {
       const { error } = await supabase.auth.signUp({ email, password })
       if (error) {
@@ -72,8 +68,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       } else toast.success('Registered')
     } catch (err) {
       toast.error('Something went wrong')
-    } finally {
-      setIsLoading(false)
     }
   }
 

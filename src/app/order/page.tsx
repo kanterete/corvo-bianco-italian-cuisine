@@ -2,7 +2,6 @@
 import React, { useEffect, useState } from 'react'
 import Menu from '@/components/Menu'
 import { Category, Dish } from '@/types/types'
-import { Skeleton } from '@/components/ui/skeleton'
 
 export default function Order() {
   const [dishes, setDishes] = useState<Dish[]>([])
@@ -44,7 +43,11 @@ export default function Order() {
         ) : error ? (
           <p className="text-lg text-gray-500">{error}</p>
         ) : (
-          <Menu categories={categories} dishes={dishes} />
+          <Menu
+            setCategories={setCategories}
+            categories={categories}
+            dishes={dishes}
+          />
         )}
       </div>
     </section>
