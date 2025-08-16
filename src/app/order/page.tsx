@@ -15,8 +15,9 @@ export default function Order() {
       setError(null)
 
       try {
-        const res = await fetch('/api/menu')
+        const res = await fetch('/api/restaurantMenu')
         if (!res.ok) throw new Error('Error downloading menu')
+
         const data = await res.json()
 
         setCategories(data.categories)
@@ -47,6 +48,7 @@ export default function Order() {
             setCategories={setCategories}
             categories={categories}
             dishes={dishes}
+            setDishes={setDishes}
           />
         )}
       </div>
