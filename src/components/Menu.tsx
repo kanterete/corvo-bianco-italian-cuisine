@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 import Meals from '@/components/Meals'
 import { Category, Dish } from '@/types/types'
 import { useAuth } from '@/context/AuthContext'
-import { PlusIcon } from 'lucide-react'
+import { PlusIcon, Trash2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -18,6 +18,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { toast } from 'sonner'
 import { DialogDescription } from '@radix-ui/react-dialog'
+import { error } from 'console'
 
 type MenuProps = {
   categories: Category[]
@@ -114,6 +115,27 @@ export default function Menu({
       setIsLoading(false)
     }
   }
+  const removeCategory = async (id: number) => {
+    setIsLoading(true)
+    try {
+      const res = await fetch(`/api/admin/categories/${id}`, {
+        method: 'DELETE',
+      })
+
+      if (!res.ok) {
+        toast.error('Deleting failed')
+        return
+      }
+
+      setCategories((prev) => prev.filter((cat) => cat.id !== id))
+      toast.success('Category deleted')
+    } catch (err) {
+      console.error(err)
+      toast.error('Something went wrong')
+    } finally {
+      setIsLoading(false)
+    }
+  }
 
   return (
     <>
@@ -122,7 +144,7 @@ export default function Menu({
         {categories ? (
           categories.map((category: Category) => (
             <li
-              className={`rounded-xl px-2 py-2 text-lg font-semibold text-white transition ${
+              className={`flex items-center gap-2 rounded-xl px-2 py-2 text-lg font-semibold text-white transition ${
                 selectedCategory === category.id
                   ? 'bg-[#7a2e22] hover:bg-[#9E3B2E]'
                   : 'bg-[#9E3B2E] hover:bg-[#7a2e22]'
@@ -130,7 +152,8 @@ export default function Menu({
               key={category.id}
               onClick={() => handleCategoryClick(category.id)}
             >
-              {category.name}
+              {category.name}{' '}
+              <Trash2 onClick={() => removeCategory(category.id)} size={16} />
             </li>
           ))
         ) : (
@@ -253,7 +276,7 @@ export default function Menu({
         </li>
       </ul>
 
-      <Meals dishes={filteredDishes} />
+      <Meals dishes={filteredDishes} setDishes={setDishes} />
     </>
   )
 }

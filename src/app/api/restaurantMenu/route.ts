@@ -13,6 +13,7 @@ export async function GET() {
   const { data: dishes, error: dishError } = await supabase
     .from('dishes')
     .select('*')
+    .order('created_at', { ascending: false })
     .overrideTypes<Dish[]>()
 
   if (categoryError || dishError) {
