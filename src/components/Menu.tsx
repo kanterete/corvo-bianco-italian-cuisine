@@ -16,33 +16,34 @@ import {
 } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { toast } from 'sonner'
 import { DialogDescription } from '@radix-ui/react-dialog'
-import { error } from 'console'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from './ui/select'
+import { useDishes } from '@/hooks/useDishes'
 
 type MenuProps = {
   categories: Category[]
   dishes: Dish[]
   setCategories: React.Dispatch<React.SetStateAction<Category[]>>
-  setDishes: React.Dispatch<React.SetStateAction<Dish[]>>
 }
 
-export default function Menu({
-  categories,
-  dishes,
-  setCategories,
-  setDishes,
-}: MenuProps) {
+export default function Menu({ categories, dishes }: MenuProps) {
   const [selectedCategory, setSelectedCategory] = useState<number>()
   const [categoryName, setCategoryName] = useState('')
 
   const [dishName, setDishName] = useState('')
-  const [dishPrice, setDishPrice] = useState<number>(0)
+  const [dishPrice, setDishPrice] = useState<number>()
   const [dishDescription, setDishDescription] = useState('')
-  const [dishPrepTime, setDishPrepTime] = useState<number>(0)
+  const [dishPrepTime, setDishPrepTime] = useState<number>()
   const [dishPhoto, setDishPhoto] = useState('')
+  const [dishCategory, setDishCategory] = useState<number>()
 
-  const [isLoading, setIsLoading] = useState(false)
+  const { isLoading, removeCategory, addCategory, addDish } = useDishes()
   const { isAdmin } = useAuth()
 
   const filteredDishes = selectedCategory
@@ -53,88 +54,6 @@ export default function Menu({
     if (selectedCategory === id) {
       setSelectedCategory(0)
     } else setSelectedCategory(id)
-  }
-
-  const addDish = async () => {
-    setIsLoading(true)
-    try {
-      const newDish = {
-        name: dishName,
-        description: dishDescription,
-        price: dishPrice,
-        prep_time_minutes: dishPrepTime,
-        image_url: dishPhoto,
-        available: true,
-      }
-      const res = await fetch('/api/admin/dishes', {
-        method: 'POST',
-        body: JSON.stringify(newDish),
-        headers: { 'Content-Type': 'application/json' },
-      })
-
-      if (!res.ok) {
-        const error = await res.json()
-        toast.error(error.message || 'Error adding dish')
-        return
-      }
-
-      const savedDish = await res.json()
-      console.log('savedDish:', savedDish)
-      setDishes((prev) => [...prev, savedDish])
-      toast.success('Dish added')
-    } catch (err) {
-      console.error(err)
-      toast.error('Something went wrong')
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
-  const addCategory = async () => {
-    setIsLoading(true)
-    try {
-      const res = await fetch('/api/admin/categories', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: categoryName }),
-      })
-
-      if (!res.ok) {
-        toast.error('Error adding category')
-        return
-      }
-
-      const newCategories = await res.json()
-      setCategories((prev) => [...prev, ...newCategories])
-
-      toast.success('Category added')
-    } catch (err) {
-      console.error(err)
-      toast.error('Something went wrong')
-    } finally {
-      setIsLoading(false)
-    }
-  }
-  const removeCategory = async (id: number) => {
-    setIsLoading(true)
-    try {
-      const res = await fetch(`/api/admin/categories/${id}`, {
-        method: 'DELETE',
-      })
-
-      if (!res.ok) {
-        toast.error('Deleting failed')
-        return
-      }
-
-      setCategories((prev) => prev.filter((cat) => cat.id !== id))
-      toast.success('Category deleted')
-    } catch (err) {
-      console.error(err)
-      toast.error('Something went wrong')
-    } finally {
-      setIsLoading(false)
-    }
   }
 
   return (
@@ -192,7 +111,7 @@ export default function Menu({
                   </div>
                 </div>
                 <DialogFooter className="sm:justify-end">
-                  <Button type="button" onClick={addCategory}>
+                  <Button type="button" onClick={() => addCategory(dishName)}>
                     Add
                   </Button>
                   <DialogClose asChild className="flex gap-2">
@@ -230,12 +149,32 @@ export default function Menu({
                   <Input
                     id="dishName"
                     value={dishName}
+                    placeholder="Name"
                     onChange={(e) => setDishName(e.target.value)}
                   />
+
+                  <Label htmlFor="dishCategory">Dish category</Label>
+                  <Select
+                    value={String(dishCategory)}
+                    onValueChange={(val) => setDishCategory(Number(val))}
+                  >
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Category" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {categories.map((cat) => (
+                        <SelectItem key={cat.id} value={String(cat.id)}>
+                          {cat.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+
                   <Label htmlFor="desc">Dish short description</Label>
                   <Input
                     id="desc"
                     value={dishDescription}
+                    placeholder="Tasty chicken with..."
                     onChange={(e) => setDishDescription(e.target.value)}
                   />
                   <Label htmlFor="price">Dish price</Label>
@@ -257,12 +196,26 @@ export default function Menu({
                     id="url"
                     type="text"
                     value={dishPhoto}
+                    placeholder="https://"
                     onChange={(e) => setDishPhoto(e.target.value)}
                   />
                 </div>
               </div>
               <DialogFooter className="sm:justify-end">
-                <Button type="button" onClick={addDish}>
+                <Button
+                  type="button"
+                  onClick={() =>
+                    addDish({
+                      name: dishName,
+                      description: dishDescription,
+                      category_id: dishCategory,
+                      price: dishPrice!,
+                      prep_time_minutes: dishPrepTime!,
+                      image_url: dishPhoto,
+                      available: true,
+                    })
+                  }
+                >
                   Add
                 </Button>
                 <DialogClose asChild className="flex gap-2">
@@ -276,7 +229,7 @@ export default function Menu({
         </li>
       </ul>
 
-      <Meals dishes={filteredDishes} setDishes={setDishes} />
+      <Meals dishes={filteredDishes} />
     </>
   )
 }

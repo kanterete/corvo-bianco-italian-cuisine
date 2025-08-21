@@ -1,40 +1,10 @@
 'use client'
 import React, { useEffect, useState } from 'react'
 import Menu from '@/components/Menu'
-import { Category, Dish } from '@/types/types'
+import { useDishes } from '@/hooks/useDishes'
 
 export default function Order() {
-  const [dishes, setDishes] = useState<Dish[]>([])
-  const [categories, setCategories] = useState<Category[]>([])
-  const [isLoading, setIsLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-
-  useEffect(() => {
-    const getMenu = async () => {
-      setIsLoading(true)
-      setError(null)
-
-      try {
-        const res = await fetch('/api/restaurantMenu')
-        if (!res.ok) throw new Error('Error downloading menu')
-
-        const data = await res.json()
-
-        setCategories(data.categories)
-        setDishes(data.dishes)
-
-        if (data.errors?.categoryError || data.errors?.dishError) {
-          setError("Data wasn't fully downloaded")
-        }
-      } catch (err: any) {
-        setError(err.message)
-      } finally {
-        setIsLoading(false)
-      }
-    }
-
-    getMenu()
-  }, [])
+  const { dishes, isLoading, error, categories, setCategories } = useDishes()
 
   return (
     <section className="bg-white py-16">
@@ -48,7 +18,6 @@ export default function Order() {
             setCategories={setCategories}
             categories={categories}
             dishes={dishes}
-            setDishes={setDishes}
           />
         )}
       </div>

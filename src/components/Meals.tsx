@@ -2,39 +2,39 @@
 import { useAuth } from '@/context/AuthContext'
 import { useCart } from '@/context/CartContext'
 import { Dish } from '@/types/types'
-import { Trash2 } from 'lucide-react'
+import { SquarePen, Trash2 } from 'lucide-react'
 import React, { useState } from 'react'
 import { toast } from 'sonner'
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { DialogDescription } from '@radix-ui/react-dialog'
+import { Button } from './ui/button'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from './ui/select'
+import { useDishes } from '@/hooks/useDishes'
 
 type MealsProps = {
   dishes: Dish[]
-  setDishes: React.Dispatch<React.SetStateAction<Dish[]>>
 }
 
-const Meals = ({ dishes, setDishes }: MealsProps) => {
+const Meals = ({ dishes }: MealsProps) => {
   const { addToCart } = useCart()
   const { isAdmin } = useAuth()
-  const [isLoading, setIsLoading] = useState(false)
-
-  const removeDish = async (id: number) => {
-    setIsLoading(true)
-    try {
-      const res = await fetch(`/api/admin/dishes/${id}`, { method: 'DELETE' })
-      if (!res.ok) {
-        const error = await res.json().catch(() => {})
-        toast.error(error.message || 'Error removing a dish')
-        return
-      }
-
-      setDishes((prev) => prev.filter((dish) => dish.id !== id))
-      toast.success('Dish removed')
-    } catch (err) {
-      console.error(err)
-      toast.error('Something went wrong')
-    } finally {
-      setIsLoading(false)
-    }
-  }
+  const { removeDish, isLoading } = useDishes()
 
   return (
     <section className="mx-auto grid max-w-6xl grid-cols-1 items-center gap-4 md:grid-cols-2 md:gap-8 lg:grid-cols-3">
@@ -49,11 +49,67 @@ const Meals = ({ dishes, setDishes }: MealsProps) => {
             className="w-full rounded-t-lg object-contain shadow-md"
           />
           {isAdmin && (
-            <div
-              onClick={() => removeDish(dish.id)}
-              className="absolute top-1 right-1 cursor-pointer rounded-xl bg-[#9E3B2E] p-1 text-white"
-            >
-              <Trash2 size={24} />
+            <div className="absolute top-1 right-1 flex gap-2">
+              <div className="cursor-pointer rounded-xl bg-[#9E3B2E] p-1 text-white">
+                <Dialog>
+                  <DialogTrigger
+                    disabled={isLoading}
+                    className="flex items-center justify-between gap-2"
+                  >
+                    {isLoading ? (
+                      'Adding...'
+                    ) : (
+                      <>
+                        <SquarePen size={20} />
+                      </>
+                    )}
+                  </DialogTrigger>
+                  <DialogContent className="sm:max-w-md">
+                    <DialogHeader>
+                      <DialogTitle>Dish</DialogTitle>
+                      <DialogDescription>Edit here a dish</DialogDescription>
+                    </DialogHeader>
+
+                    <div className="flex items-center gap-2">
+                      <div className="grid flex-1 gap-2">
+                        <Label htmlFor="dishName">Dish name</Label>
+                        <Input id="dishName" placeholder="Name" />
+
+                        <Label htmlFor="dishCategory">Dish category</Label>
+                        <Select>
+                          <SelectTrigger className="w-full">
+                            <SelectValue placeholder="Category" />
+                          </SelectTrigger>
+                          <SelectContent></SelectContent>
+                        </Select>
+
+                        <Label htmlFor="desc">Dish short description</Label>
+                        <Input id="desc" placeholder="Tasty chicken with..." />
+                        <Label htmlFor="price">Dish price</Label>
+                        <Input id="price" type="number" />
+                        <Label htmlFor="prepTime">Dish prep time</Label>
+                        <Input id="prepTime" type="number" />
+                        <Label htmlFor="url">Dish url</Label>
+                        <Input id="url" type="text" placeholder="https://" />
+                      </div>
+                    </div>
+                    <DialogFooter className="sm:justify-end">
+                      <Button type="button">Add</Button>
+                      <DialogClose asChild className="flex gap-2">
+                        <Button type="button" variant="secondary">
+                          Close
+                        </Button>
+                      </DialogClose>
+                    </DialogFooter>
+                  </DialogContent>
+                </Dialog>
+              </div>
+              <div
+                onClick={() => removeDish(dish.id!)}
+                className="cursor-pointer rounded-xl bg-[#9E3B2E] p-1 text-white"
+              >
+                <Trash2 size={20} />
+              </div>
             </div>
           )}
 

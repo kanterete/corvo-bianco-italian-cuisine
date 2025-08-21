@@ -1,11 +1,11 @@
 export interface Dish {
-  id: number
+  id?: number
   name: string
   description?: string
   price: number
   available: boolean
   image_url: string
-  prep_time_minutes: string
+  prep_time_minutes: number
   category_id?: number
 }
 
