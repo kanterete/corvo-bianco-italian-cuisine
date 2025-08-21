@@ -4,7 +4,6 @@ import { useCart } from '@/context/CartContext'
 import { Dish } from '@/types/types'
 import { SquarePen, Trash2 } from 'lucide-react'
 import React, { useState } from 'react'
-import { toast } from 'sonner'
 import {
   Dialog,
   DialogClose,

@@ -26,13 +26,7 @@ import {
 } from './ui/select'
 import { useDishes } from '@/hooks/useDishes'
 
-type MenuProps = {
-  categories: Category[]
-  dishes: Dish[]
-  setCategories: React.Dispatch<React.SetStateAction<Category[]>>
-}
-
-export default function Menu({ categories, dishes }: MenuProps) {
+export default function Menu() {
   const [selectedCategory, setSelectedCategory] = useState<number>()
   const [categoryName, setCategoryName] = useState('')
 
@@ -43,7 +37,15 @@ export default function Menu({ categories, dishes }: MenuProps) {
   const [dishPhoto, setDishPhoto] = useState('')
   const [dishCategory, setDishCategory] = useState<number>()
 
-  const { isLoading, removeCategory, addCategory, addDish } = useDishes()
+  const {
+    dishes,
+    categories,
+    isLoading,
+    removeCategory,
+    addCategory,
+    addDish,
+  } = useDishes()
+
   const { isAdmin } = useAuth()
 
   const filteredDishes = selectedCategory
@@ -111,7 +113,10 @@ export default function Menu({ categories, dishes }: MenuProps) {
                   </div>
                 </div>
                 <DialogFooter className="sm:justify-end">
-                  <Button type="button" onClick={() => addCategory(dishName)}>
+                  <Button
+                    type="button"
+                    onClick={() => addCategory(categoryName)}
+                  >
                     Add
                   </Button>
                   <DialogClose asChild className="flex gap-2">

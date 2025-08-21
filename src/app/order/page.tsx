@@ -4,7 +4,7 @@ import Menu from '@/components/Menu'
 import { useDishes } from '@/hooks/useDishes'
 
 export default function Order() {
-  const { dishes, isLoading, error, categories, setCategories } = useDishes()
+  const { isLoading, error } = useDishes()
 
   return (
     <section className="bg-white py-16">
@@ -14,11 +14,7 @@ export default function Order() {
         ) : error ? (
           <p className="text-lg text-gray-500">{error}</p>
         ) : (
-          <Menu
-            setCategories={setCategories}
-            categories={categories}
-            dishes={dishes}
-          />
+          <Menu />
         )}
       </div>
     </section>
