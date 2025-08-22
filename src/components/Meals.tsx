@@ -1,43 +1,27 @@
 'use client'
 import { useAuth } from '@/context/AuthContext'
 import { useCart } from '@/context/CartContext'
-import { Dish } from '@/types/types'
-import { SquarePen, Trash2 } from 'lucide-react'
-import React, { useState } from 'react'
-import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '@/components/ui/dialog'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { DialogDescription } from '@radix-ui/react-dialog'
-import { Button } from './ui/button'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from './ui/select'
+import { Trash2 } from 'lucide-react'
+import React from 'react'
 import { useDishes } from '@/hooks/useDishes'
+import EditDishDialog from './Modals/EditDishDialog'
 
 type MealsProps = {
-  dishes: Dish[]
+  selectedCategory: number
 }
 
-const Meals = ({ dishes }: MealsProps) => {
+const Meals = ({ selectedCategory }: MealsProps) => {
   const { addToCart } = useCart()
   const { isAdmin } = useAuth()
-  const { removeDish, isLoading } = useDishes()
+  const { dishes, removeDish } = useDishes()
+
+  const filteredDishes = selectedCategory
+    ? dishes.filter((dish) => dish.category_id === selectedCategory)
+    : dishes
 
   return (
     <section className="mx-auto grid max-w-6xl grid-cols-1 items-center gap-4 md:grid-cols-2 md:gap-8 lg:grid-cols-3">
-      {dishes.map((dish) => (
+      {filteredDishes.map((dish) => (
         <div
           key={dish.id}
           className="relative h-fit w-72 rounded-md text-black shadow-lg"
@@ -49,66 +33,13 @@ const Meals = ({ dishes }: MealsProps) => {
           />
           {isAdmin && (
             <div className="absolute top-1 right-1 flex gap-2">
-              <div className="cursor-pointer rounded-xl bg-[#9E3B2E] p-1 text-white">
-                <Dialog>
-                  <DialogTrigger
-                    disabled={isLoading}
-                    className="flex items-center justify-between gap-2"
-                  >
-                    {isLoading ? (
-                      'Adding...'
-                    ) : (
-                      <>
-                        <SquarePen size={20} />
-                      </>
-                    )}
-                  </DialogTrigger>
-                  <DialogContent className="sm:max-w-md">
-                    <DialogHeader>
-                      <DialogTitle>Dish</DialogTitle>
-                      <DialogDescription>Edit here a dish</DialogDescription>
-                    </DialogHeader>
-
-                    <div className="flex items-center gap-2">
-                      <div className="grid flex-1 gap-2">
-                        <Label htmlFor="dishName">Dish name</Label>
-                        <Input id="dishName" placeholder="Name" />
-
-                        <Label htmlFor="dishCategory">Dish category</Label>
-                        <Select>
-                          <SelectTrigger className="w-full">
-                            <SelectValue placeholder="Category" />
-                          </SelectTrigger>
-                          <SelectContent></SelectContent>
-                        </Select>
-
-                        <Label htmlFor="desc">Dish short description</Label>
-                        <Input id="desc" placeholder="Tasty chicken with..." />
-                        <Label htmlFor="price">Dish price</Label>
-                        <Input id="price" type="number" />
-                        <Label htmlFor="prepTime">Dish prep time</Label>
-                        <Input id="prepTime" type="number" />
-                        <Label htmlFor="url">Dish url</Label>
-                        <Input id="url" type="text" placeholder="https://" />
-                      </div>
-                    </div>
-                    <DialogFooter className="sm:justify-end">
-                      <Button type="button">Add</Button>
-                      <DialogClose asChild className="flex gap-2">
-                        <Button type="button" variant="secondary">
-                          Close
-                        </Button>
-                      </DialogClose>
-                    </DialogFooter>
-                  </DialogContent>
-                </Dialog>
-              </div>
-              <div
+              <EditDishDialog dish={dish} />
+              <button
                 onClick={() => removeDish(dish.id!)}
-                className="cursor-pointer rounded-xl bg-[#9E3B2E] p-1 text-white"
+                className="cursor-pointer rounded-xl bg-[#9E3B2E] p-1 text-white hover:bg-[#7a2e22]"
               >
                 <Trash2 size={20} />
-              </div>
+              </button>
             </div>
           )}
 

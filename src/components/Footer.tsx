@@ -1,4 +1,4 @@
-import { Button, Form, Input } from '@heroui/react'
+import { Button, Form } from '@heroui/react'
 import React from 'react'
 
 const Footer = () => {
