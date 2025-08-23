@@ -24,6 +24,7 @@ import {
 import { SquarePen } from 'lucide-react'
 import { Dish } from '@/types/types'
 import { useDishes } from '@/hooks/useDishes'
+import { Checkbox } from '../ui/checkbox'
 
 type EditDishDialogProps = {
   dish: Dish
@@ -38,12 +39,10 @@ const EditDishDialog = ({ dish }: EditDishDialogProps) => {
   )
   const [dishPhoto, setDishPhoto] = useState(dish.image_url)
   const [dishCategory, setDishCategory] = useState<number>(dish.category_id!)
+  const [dishAvailable, setDishAvailable] = useState(dish.available)
 
-  const { dishes, categories } = useDishes()
+  const { updateDish, categories } = useDishes()
 
-  const dishCategoryName = dishes.find(
-    (dish) => dish.category_id === dishCategory,
-  )
   return (
     <div className="cursor-pointer rounded-xl bg-[#9E3B2E] p-1 text-white hover:bg-[#7a2e22]">
       <Dialog modal>
@@ -70,7 +69,7 @@ const EditDishDialog = ({ dish }: EditDishDialogProps) => {
 
               <Label htmlFor="dishCategory">Dish category</Label>
               <Select
-                value={String(dish.category_id)}
+                value={String(dishCategory)}
                 onValueChange={(val) => setDishCategory(Number(val))}
               >
                 <SelectTrigger className="w-full">
@@ -116,10 +115,31 @@ const EditDishDialog = ({ dish }: EditDishDialogProps) => {
                 placeholder="https://"
                 onChange={(e) => setDishPhoto(e.target.value)}
               />
+              <Label htmlFor="available">Dish available</Label>
+              <Checkbox
+                id="available"
+                checked={dishAvailable}
+                onCheckedChange={(val) => setDishAvailable(!!val)}
+              />
             </div>
           </div>
           <DialogFooter className="sm:justify-end">
-            <Button type="button">Add</Button>
+            <Button
+              type="button"
+              onClick={() =>
+                updateDish(dish.id!, {
+                  name: dishName,
+                  description: dishDescription,
+                  price: dishPrice,
+                  available: dishAvailable,
+                  image_url: dishPhoto,
+                  prep_time_minutes: dishPrepTime,
+                  category_id: dishCategory,
+                })
+              }
+            >
+              Save
+            </Button>
             <DialogClose asChild className="flex gap-2">
               <Button type="button" variant="secondary">
                 Close

@@ -46,7 +46,8 @@ export function useDishes() {
       })
 
       if (!res.ok) {
-        toast.error('Error adding category')
+        const error = await res.json()
+        toast.error(error.message || 'Error adding category')
         return
       }
 
@@ -103,6 +104,32 @@ export function useDishes() {
     }
   }
 
+  const updateDish = async (id: number, updatedDish: Dish) => {
+    setIsLoading(true)
+    try {
+      const res = await fetch(`api/admin/dishes/${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updatedDish),
+      })
+      if (!res.ok) {
+        const error = await res.json().catch(() => {})
+        toast.error(error.message || 'Error updating a dish')
+        return
+      }
+
+      const newDishes = await res.json()
+      setDishes((prev) => [...prev, newDishes])
+
+      toast.success('Dish updated')
+    } catch (err) {
+      console.error(err)
+      toast.error('Something went wrong')
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
   useEffect(() => {
     const getMenu = async () => {
       setIsLoading(true)
@@ -141,5 +168,6 @@ export function useDishes() {
     removeCategory,
     addDish,
     removeDish,
+    updateDish,
   }
 }
