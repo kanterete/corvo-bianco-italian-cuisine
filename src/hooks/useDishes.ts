@@ -1,5 +1,5 @@
 'use client'
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Category, Dish } from '@/types/types'
 import { toast } from 'sonner'
 
@@ -119,9 +119,39 @@ export function useDishes() {
       }
 
       const newDishes = await res.json()
-      setDishes((prev) => [...prev, newDishes])
+      setDishes((prev) =>
+        prev.map((d) => (d.id === newDishes.id ? newDishes : d)),
+      )
 
       toast.success('Dish updated')
+    } catch (err) {
+      console.error(err)
+      toast.error('Something went wrong')
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  const updateCategory = async (id: number, name: string) => {
+    setIsLoading(true)
+    try {
+      const res = await fetch(`/api/admin/categories/${id}`, {
+        method: 'PATCH',
+        body: JSON.stringify({ name }),
+        headers: { 'Content-Type': 'application/json' },
+      })
+
+      if (!res.ok) {
+        const error = await res.json()
+        toast.error(error.message || 'Error updating a category')
+        return
+      }
+
+      const newCat = await res.json()
+      setCategories((prev) =>
+        prev.map((cat) => (cat.id === newCat.id ? newCat : cat)),
+      )
+      toast.success('Category updated')
     } catch (err) {
       console.error(err)
       toast.error('Something went wrong')
@@ -169,5 +199,6 @@ export function useDishes() {
     addDish,
     removeDish,
     updateDish,
+    updateCategory,
   }
 }

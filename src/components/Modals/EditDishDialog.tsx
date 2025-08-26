@@ -53,7 +53,7 @@ const EditDishDialog = ({ dish }: EditDishDialogProps) => {
           <DialogHeader>
             <DialogTitle>Dish</DialogTitle>
             <DialogDescription>
-              Edit here a <span className="font-bold">{dishName}</span>
+              Edit here a <span className="font-bold">dish</span>
             </DialogDescription>
           </DialogHeader>
 

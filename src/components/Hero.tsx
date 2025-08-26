@@ -25,7 +25,6 @@ const Hero = () => {
           >
             Order
           </Link>
-          <ProfilesList />
         </div>
       </div>
     </section>

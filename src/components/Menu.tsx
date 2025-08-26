@@ -1,12 +1,13 @@
 'use client'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Meals from '@/components/Meals'
 import { Category, Dish } from '@/types/types'
 import { useAuth } from '@/context/AuthContext'
-import { Trash2 } from 'lucide-react'
+import { Edit, Trash2 } from 'lucide-react'
 import { useDishes } from '@/hooks/useDishes'
 import AddCategoryDialog from './Modals/AddCategoryDialog'
 import AddDishDialog from './Modals/AddDishDialog'
+import EditCategoryDialog from './Modals/EditCategoryDialog'
 
 export default function Menu() {
   const [selectedCategory, setSelectedCategory] = useState<number>(0)
@@ -40,15 +41,21 @@ export default function Menu() {
               >
                 <span className="cursor-pointer">{category.name}</span>
 
-                <button
-                  className="cursor-pointer"
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    removeCategory(category.id)
-                  }}
-                >
-                  <Trash2 size={16} />
-                </button>
+                {isAdmin && (
+                  <>
+                    <EditCategoryDialog category={category} />
+
+                    <button
+                      className="cursor-pointer"
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        removeCategory(category.id)
+                      }}
+                    >
+                      <Trash2 size={16} />
+                    </button>
+                  </>
+                )}
               </li>
             ))
           ) : (

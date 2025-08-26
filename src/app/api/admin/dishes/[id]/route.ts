@@ -4,7 +4,7 @@ import { NextResponse } from 'next/server'
 
 export async function DELETE(
   req: Request,
-  { params }: { params: Promise<{ id: number }> },
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const adminCheck = await requireAdmin()
   if (!adminCheck.ok) return adminCheck.response
@@ -12,7 +12,7 @@ export async function DELETE(
   const { id } = await params
 
   const supabase = await createClient()
-  const { error } = await supabase.from('dishes').delete().eq('id', id)
+  const { error } = await supabase.from('dishes').delete().eq('id', Number(id))
 
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 })
@@ -23,19 +23,19 @@ export async function DELETE(
 
 export async function PATCH(
   req: Request,
-  { params }: { params: { id: number } },
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const adminCheck = await requireAdmin()
   if (!adminCheck.ok) return adminCheck.response
 
-  const { id } = params
+  const { id } = await params
   const dish = await req.json()
 
   const supabase = await createClient()
   const { data, error } = await supabase
     .from('dishes')
     .update(dish)
-    .eq('id', id)
+    .eq('id', Number(id))
     .select()
     .single()
 
