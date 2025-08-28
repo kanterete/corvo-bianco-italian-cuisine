@@ -16,22 +16,25 @@ import { Button } from '../ui/button'
 
 import { SquarePen } from 'lucide-react'
 import { Category } from '@/types/types'
-import { useDishes } from '@/hooks/useDishes'
+import { useDishes } from '@/context/DishesContext'
 
 type EditCategoryDialogProps = {
   category: Category
 }
+
+const wait = () => new Promise((res) => setTimeout(res, 1000))
 
 export default function EditCategoryDialog({
   category,
 }: EditCategoryDialogProps) {
   {
     const [categoryName, setCategoryName] = useState(category.name)
+    const [open, setOpen] = useState(false)
     const { updateCategory } = useDishes()
 
     return (
       <div className="cursor-pointer rounded-xl bg-[#9E3B2E] p-1 text-white hover:bg-[#7a2e22]">
-        <Dialog modal>
+        <Dialog modal open={open} onOpenChange={setOpen}>
           <DialogTrigger className="flex items-center justify-between gap-2">
             <SquarePen size={16} />
           </DialogTrigger>
@@ -57,6 +60,7 @@ export default function EditCategoryDialog({
                 type="button"
                 onClick={(e) => {
                   e.stopPropagation()
+                  wait().then(() => setOpen(false))
                   updateCategory(category.id, categoryName)
                 }}
               >

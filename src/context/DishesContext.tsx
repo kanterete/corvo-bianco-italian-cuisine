@@ -1,16 +1,34 @@
 'use client'
-import { useEffect, useState } from 'react'
+
 import { Category, Dish } from '@/types/types'
+import { createContext, useContext, useEffect, useState } from 'react'
 import { toast } from 'sonner'
 
-export function useDishes() {
+type DishesContextType = {
+  categories: Category[]
+  dishes: Dish[]
+  setCategories: React.Dispatch<React.SetStateAction<Category[]>>
+  setDishes: React.Dispatch<React.SetStateAction<Dish[]>>
+  addCategory: (name: string) => Promise<void>
+  addDish: (dish: Dish) => Promise<void>
+  removeCategory: (id: number) => Promise<void>
+  removeDish: (id: number) => Promise<void>
+  updateCategory: (id: number, name: string) => Promise<void>
+  updateDish: (id: number, dish: Dish) => Promise<void>
+  isLoadingGlobal: boolean
+  error: string | null
+}
+
+const DishesContext = createContext<DishesContextType | undefined>(undefined)
+
+export function DishesProvider({ children }: { children: React.ReactNode }) {
   const [dishes, setDishes] = useState<Dish[]>([])
   const [categories, setCategories] = useState<Category[]>([])
-  const [isLoading, setIsLoading] = useState(true)
+  const [isLoadingGlobal, setIsLoadingGlobal] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
   const addDish = async (dish: Dish) => {
-    setIsLoading(true)
+    setIsLoadingGlobal(true)
     try {
       const res = await fetch('/api/admin/dishes', {
         method: 'POST',
@@ -32,12 +50,12 @@ export function useDishes() {
       console.error(err)
       toast.error('Something went wrong')
     } finally {
-      setIsLoading(false)
+      setIsLoadingGlobal(false)
     }
   }
 
   const addCategory = async (name: string) => {
-    setIsLoading(true)
+    setIsLoadingGlobal(true)
     try {
       const res = await fetch('/api/admin/categories', {
         method: 'POST',
@@ -59,11 +77,11 @@ export function useDishes() {
       console.error(err)
       toast.error('Something went wrong')
     } finally {
-      setIsLoading(false)
+      setIsLoadingGlobal(false)
     }
   }
   const removeCategory = async (id: number) => {
-    setIsLoading(true)
+    setIsLoadingGlobal(true)
     try {
       const res = await fetch(`/api/admin/categories/${id}`, {
         method: 'DELETE',
@@ -80,12 +98,12 @@ export function useDishes() {
       console.error(err)
       toast.error('Something went wrong')
     } finally {
-      setIsLoading(false)
+      setIsLoadingGlobal(false)
     }
   }
 
   const removeDish = async (id: number) => {
-    setIsLoading(true)
+    setIsLoadingGlobal(true)
     try {
       const res = await fetch(`/api/admin/dishes/${id}`, { method: 'DELETE' })
       if (!res.ok) {
@@ -100,12 +118,12 @@ export function useDishes() {
       console.error(err)
       toast.error('Something went wrong')
     } finally {
-      setIsLoading(false)
+      setIsLoadingGlobal(false)
     }
   }
 
   const updateDish = async (id: number, updatedDish: Dish) => {
-    setIsLoading(true)
+    setIsLoadingGlobal(true)
     try {
       const res = await fetch(`api/admin/dishes/${id}`, {
         method: 'PATCH',
@@ -128,12 +146,12 @@ export function useDishes() {
       console.error(err)
       toast.error('Something went wrong')
     } finally {
-      setIsLoading(false)
+      setIsLoadingGlobal(false)
     }
   }
 
   const updateCategory = async (id: number, name: string) => {
-    setIsLoading(true)
+    setIsLoadingGlobal(true)
     try {
       const res = await fetch(`/api/admin/categories/${id}`, {
         method: 'PATCH',
@@ -156,15 +174,14 @@ export function useDishes() {
       console.error(err)
       toast.error('Something went wrong')
     } finally {
-      setIsLoading(false)
+      setIsLoadingGlobal(false)
     }
   }
 
   useEffect(() => {
     const getMenu = async () => {
-      setIsLoading(true)
+      setIsLoadingGlobal(true)
       setError(null)
-
       try {
         const res = await fetch('/api/restaurantMenu')
         if (!res.ok) throw new Error('Error downloading menu')
@@ -180,25 +197,37 @@ export function useDishes() {
       } catch (err: any) {
         setError(err.message)
       } finally {
-        setIsLoading(false)
+        setIsLoadingGlobal(false)
       }
     }
 
     getMenu()
   }, [])
 
-  return {
-    dishes,
-    setDishes,
-    categories,
-    setCategories,
-    isLoading,
-    error,
-    addCategory,
-    removeCategory,
-    addDish,
-    removeDish,
-    updateDish,
-    updateCategory,
-  }
+  return (
+    <DishesContext.Provider
+      value={{
+        categories,
+        setCategories,
+        dishes,
+        setDishes,
+        addCategory,
+        addDish,
+        removeCategory,
+        removeDish,
+        updateDish,
+        updateCategory,
+        isLoadingGlobal,
+        error,
+      }}
+    >
+      {children}
+    </DishesContext.Provider>
+  )
+}
+
+export function useDishes() {
+  const ctx = useContext(DishesContext)
+  if (!ctx) throw new Error('useDishes must be used within DishesProvider')
+  return ctx
 }

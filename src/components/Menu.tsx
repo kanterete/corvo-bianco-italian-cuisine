@@ -4,15 +4,14 @@ import Meals from '@/components/Meals'
 import { Category, Dish } from '@/types/types'
 import { useAuth } from '@/context/AuthContext'
 import { Edit, Trash2 } from 'lucide-react'
-import { useDishes } from '@/hooks/useDishes'
+import { useDishes } from '@/context/DishesContext'
 import AddCategoryDialog from './Modals/AddCategoryDialog'
 import AddDishDialog from './Modals/AddDishDialog'
 import EditCategoryDialog from './Modals/EditCategoryDialog'
 
 export default function Menu() {
   const [selectedCategory, setSelectedCategory] = useState<number>(0)
-
-  const { categories, removeCategory, addCategory, addDish } = useDishes()
+  const { categories, removeCategory } = useDishes()
   const { isAdmin } = useAuth()
 
   const handleCategoryClick = (id: number) => {
@@ -66,8 +65,8 @@ export default function Menu() {
 
       {isAdmin && (
         <div className="mb-6 flex gap-4">
-          <AddCategoryDialog addCategory={addCategory} />
-          <AddDishDialog addDish={addDish} categories={categories} />
+          <AddCategoryDialog />
+          <AddDishDialog />
         </div>
       )}
 

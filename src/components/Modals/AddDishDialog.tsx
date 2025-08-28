@@ -20,32 +20,30 @@ import {
   SelectTrigger,
   SelectValue,
 } from '../ui/select'
-import { useDishes } from '@/hooks/useDishes'
+import { useDishes } from '@/context/DishesContext'
 import { PlusIcon } from 'lucide-react'
-import { Category, Dish } from '@/types/types'
 
-type AddDishDialogProps = {
-  addDish: (dish: Dish) => Promise<void>
-  categories: Category[]
-}
+const wait = () => new Promise((res) => setTimeout(res, 1000))
 
-const AddDishDialog = ({ addDish, categories }: AddDishDialogProps) => {
+const AddDishDialog = () => {
   const [dishName, setDishName] = useState('')
   const [dishPrice, setDishPrice] = useState<number>()
   const [dishDescription, setDishDescription] = useState('')
   const [dishPrepTime, setDishPrepTime] = useState<number>()
   const [dishPhoto, setDishPhoto] = useState('')
   const [dishCategory, setDishCategory] = useState<number>()
-  const { isLoading } = useDishes()
+
+  const { isLoadingGlobal, addDish, categories } = useDishes()
+  const [open, setOpen] = useState(false)
 
   return (
     <>
       <Dialog modal>
         <DialogTrigger
-          disabled={isLoading}
+          disabled={isLoadingGlobal}
           className="flex items-center justify-between gap-2 rounded-xl bg-[#9E3B2E] px-2 py-2 text-lg font-semibold text-white transition hover:bg-[#7a2e22]"
         >
-          {isLoading ? (
+          {isLoadingGlobal ? (
             'Adding...'
           ) : (
             <>
@@ -119,7 +117,9 @@ const AddDishDialog = ({ addDish, categories }: AddDishDialogProps) => {
           <DialogFooter className="sm:justify-end">
             <Button
               type="button"
-              onClick={() =>
+              onClick={() => {
+                wait().then(() => setOpen(false))
+
                 addDish({
                   name: dishName,
                   description: dishDescription,
@@ -129,7 +129,7 @@ const AddDishDialog = ({ addDish, categories }: AddDishDialogProps) => {
                   image_url: dishPhoto,
                   available: true,
                 })
-              }
+              }}
             >
               Add
             </Button>

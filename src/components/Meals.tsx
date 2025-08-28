@@ -3,7 +3,7 @@ import { useAuth } from '@/context/AuthContext'
 import { useCart } from '@/context/CartContext'
 import { Trash2 } from 'lucide-react'
 import React from 'react'
-import { useDishes } from '@/hooks/useDishes'
+import { useDishes } from '@/context/DishesContext'
 import EditDishDialog from './Modals/EditDishDialog'
 
 type MealsProps = {
@@ -13,7 +13,7 @@ type MealsProps = {
 const Meals = ({ selectedCategory }: MealsProps) => {
   const { addToCart } = useCart()
   const { isAdmin } = useAuth()
-  const { dishes, removeDish, isLoading } = useDishes()
+  const { dishes, removeDish } = useDishes()
 
   const filteredDishes = selectedCategory
     ? dishes.filter((dish) => dish.category_id === selectedCategory)
@@ -21,9 +21,7 @@ const Meals = ({ selectedCategory }: MealsProps) => {
 
   return (
     <section className="mx-auto grid max-w-6xl grid-cols-1 items-center gap-4 md:grid-cols-2 md:gap-8 lg:grid-cols-3">
-      {isLoading ? (
-        <p className="text-lg text-gray-500">Loading dishes...</p>
-      ) : filteredDishes.length > 0 ? (
+      {filteredDishes.length > 0 ? (
         filteredDishes.map((dish) => (
           <div
             key={dish.id}

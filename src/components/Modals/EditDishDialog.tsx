@@ -23,14 +23,17 @@ import {
 } from '../ui/select'
 import { SquarePen } from 'lucide-react'
 import { Dish } from '@/types/types'
-import { useDishes } from '@/hooks/useDishes'
+import { useDishes } from '@/context/DishesContext'
 import { Checkbox } from '../ui/checkbox'
 
 type EditDishDialogProps = {
   dish: Dish
 }
+const wait = () => new Promise((res) => setTimeout(res, 1000))
 
 const EditDishDialog = ({ dish }: EditDishDialogProps) => {
+  const [open, setOpen] = useState(false)
+
   const [dishName, setDishName] = useState(dish.name)
   const [dishPrice, setDishPrice] = useState<number>(dish.price)
   const [dishDescription, setDishDescription] = useState(dish.description)
@@ -45,7 +48,7 @@ const EditDishDialog = ({ dish }: EditDishDialogProps) => {
 
   return (
     <div className="cursor-pointer rounded-xl bg-[#9E3B2E] p-1 text-white hover:bg-[#7a2e22]">
-      <Dialog modal>
+      <Dialog modal open={open} onOpenChange={setOpen}>
         <DialogTrigger className="flex items-center justify-between gap-2">
           <SquarePen size={20} />
         </DialogTrigger>
@@ -126,7 +129,9 @@ const EditDishDialog = ({ dish }: EditDishDialogProps) => {
           <DialogFooter className="sm:justify-end">
             <Button
               type="button"
-              onClick={() =>
+              onClick={() => {
+                wait().then(() => setOpen(false))
+
                 updateDish(dish.id!, {
                   name: dishName,
                   description: dishDescription,
@@ -136,7 +141,7 @@ const EditDishDialog = ({ dish }: EditDishDialogProps) => {
                   prep_time_minutes: dishPrepTime,
                   category_id: dishCategory,
                 })
-              }
+              }}
             >
               Save
             </Button>

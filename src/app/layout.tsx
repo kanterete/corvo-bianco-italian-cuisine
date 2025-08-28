@@ -8,6 +8,7 @@ import Footer from '@/components/Footer'
 import { Toaster } from 'sonner'
 import { CartProvider } from '@/context/CartContext'
 import { AuthProvider } from '@/context/AuthContext'
+import { DishesProvider } from '@/context/DishesContext'
 
 const playfair = Playfair_Display({
   subsets: ['latin'],
@@ -34,12 +35,14 @@ export default function RootLayout({
     <html lang="en">
       <body className={`min-h-screen ${playfair.className}`}>
         <AuthProvider>
-          <CartProvider>
-            <Navbar />
-            {children}
-            <Footer />
-            <Toaster />
-          </CartProvider>
+          <DishesProvider>
+            <CartProvider>
+              <Navbar />
+              {children}
+              <Footer />
+              <Toaster />
+            </CartProvider>
+          </DishesProvider>
         </AuthProvider>
       </body>
     </html>
