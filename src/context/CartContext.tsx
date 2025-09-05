@@ -12,6 +12,7 @@ type CartContextType = {
   clearCart: () => void
   getTotal: () => number
   getCartLength: () => number
+  adjustQuantity: (id: number, adjustment: number) => void
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined)
@@ -33,6 +34,21 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
 
   const removeFromCart = (id: number) => {
     setCart((cart) => cart.filter((item) => item.id !== id))
+  }
+
+  const adjustQuantity = (id: number, adjustment: number) => {
+    setCart((cart) =>
+      cart.flatMap((item) => {
+        if (item.id !== id) return item
+        const newQuantity = item.quantity + adjustment
+        if (newQuantity <= 0) {
+          removeFromCart(id)
+          return []
+        }
+        return { ...item, quantity: newQuantity }
+      }),
+    )
+    adjustment > 0 ? toast('Increased quantity!') : toast('Decreased quantity!')
   }
 
   const addToCart = (dish: Dish) => {
@@ -59,6 +75,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         addToCart,
         getTotal,
         getCartLength,
+        adjustQuantity,
       }}
     >
       {children}

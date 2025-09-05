@@ -17,12 +17,13 @@ import CartItem from './CartItem'
 
 const CartDrawer = () => {
   const { cart, clearCart, getTotal, getCartLength } = useCart()
+  let cartLength = getCartLength()
   return (
     <Drawer>
       <DrawerTrigger>
         <div className="relative rounded-xl bg-[#9E3B2E] p-3 text-white transition hover:bg-[#7a2e22]">
           <p className="absolute top-0 right-1 rounded-4xl text-sm font-semibold">
-            {getCartLength() > 0 ? getCartLength() : ''}
+            {cartLength > 0 ? cartLength : ''}
           </p>
           <ShoppingCart size={20} />
         </div>
@@ -38,8 +39,8 @@ const CartDrawer = () => {
 
         <div className="mx-4">
           <p>
-            You have <span className="font-semibold">{cart.length}</span>{' '}
-            {cart.length === 1 ? 'item' : 'items'} in your cart
+            You have <span className="font-semibold">{cartLength}</span>{' '}
+            {cartLength === 1 ? 'item' : 'items'} in your cart
           </p>
           <p>
             <span className="font-semibold">Total:</span> {getTotal()} zł
