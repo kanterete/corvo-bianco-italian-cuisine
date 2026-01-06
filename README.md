@@ -34,7 +34,17 @@ The application is deployed and available online:
 
 👉 https://corvo-bianco-italian-cuisine.vercel.app
 
-## Screenshots
+## 🔑 Test Accounts
+
+You can use the following test account to explore the application:
+
+- **Email:** admin@admin
+- **Password:** Administrator
+
+- **Email:** user@user
+- **Password:** User123
+
+## 📸 Screenshots
 
 <img width="1919" height="925" alt="opera_Zwgv9wcMg5" src="https://github.com/user-attachments/assets/a3b105e8-022b-4a18-a434-d83f0bfc295f" />
 <img width="1917" height="481" alt="opera_mFL8L74G9I" src="https://github.com/user-attachments/assets/c7371d60-5c56-41ba-a43e-97bff91c66d8" />
